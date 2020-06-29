@@ -6,9 +6,9 @@ G = globals()
 
 
 def make_mkEffectFn(n: int):
-    myname = 'mkEffectFn{}'.format(n)
+    myname = "mkEffectFn{}".format(n)
     args = ["x{}".format(i) for i in range(n)]
-    fn = 'fn'
+    fn = "fn"
     fcall = var(fn)
     for each in args:
         fcall = call(fcall, var(each))
@@ -30,27 +30,22 @@ def make_mkEffectFn(n: int):
 
 
 def make_runEffectFn(n: int):
-    myname = 'runEffectFn{}'.format(n)
+    myname = "runEffectFn{}".format(n)
     args = ["x{}".format(i) for i in range(n)]
-    fn = 'fn'
+    fn = "fn"
     fcall = call(var(fn), *map(var, args))
     lam = define(None, [], fcall)
     for arg in reversed(args):
-        lam = define(None, [var(arg)], lam)
+        lam = define(None, [arg], lam)
 
     meta_code = make_runEffectFn.__code__
-    ast = metadata(
-        meta_code.co_firstlineno,
-        1,
-        meta_code.co_filename,
-        lam,
-    )
+    ast = metadata(meta_code.co_firstlineno, 1, meta_code.co_filename, lam,)
     code = module_code(ast, name=__name__, filename=__file__)
 
     G[myname] = eval(code)
     __all__.append(myname)
 
 
-for i in range(10):
+for i in range(1, 11):
     make_mkEffectFn(i)
     make_runEffectFn(i)
